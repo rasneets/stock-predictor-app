@@ -5,6 +5,6 @@ yfinance
 matplotlib
 scikit-learn
 ta
-tensorflow==2.19.0
-keras==2.19.0
+tensorflow==2.18.0
+keras==3.8.0
 plotly
