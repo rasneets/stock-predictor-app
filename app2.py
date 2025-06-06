@@ -11,15 +11,15 @@ from sklearn.metrics import r2_score
 from keras.models import Sequential, load_model
 from keras.layers import LSTM, Dense, Dropout
 import plotly.graph_objects as go
-# ================================
+
 # Data Functions
-# ================================
+
 from datetime import datetime, timedelta
 
 def fetch_stock_data(symbol='BHARTIARTL.NS', start='2005-01-01', end='2025-01-01', extra_days=100):
-    # Extend the start date backwards by `extra_days`
+    
     start_dt = datetime.strptime(start, "%Y-%m-%d")
-    start_extended = (start_dt - timedelta(days=extra_days*2)).strftime("%Y-%m-%d")  # buffer for weekends/holidays
+    start_extended = (start_dt - timedelta(days=extra_days*2)).strftime("%Y-%m-%d")  
 
     df = yf.download(symbol, start=start_extended, end=end)
 
@@ -38,7 +38,7 @@ def fetch_stock_data(symbol='BHARTIARTL.NS', start='2005-01-01', end='2025-01-01
 
     df.dropna(inplace=True)
 
-    # Trim to original date range + extra 100 for LSTM window
+    
     df = df[df.index >= start_dt - timedelta(days=extra_days)]
     df = df[df.index <= pd.to_datetime(end)]
 
@@ -99,9 +99,7 @@ def get_price_group(price):
     else:
         return 'group_more'
 
-# ================================
-# Prediction Functions
-# ================================
+
 
 def predict_tomorrow_price(symbol, trained_models, window=100):
     df = fetch_stock_data(symbol)
@@ -191,9 +189,7 @@ def predict_new_stock_best(symbol, start, end, trained_models, window=100):
     else:
         return None, None, None
 
-# ================================
-# Streamlit App
-# ================================
+
 
 st.set_page_config(page_title="Stock Predictor", layout="wide")
 st.title("📊 NSE Stock Predictor")
@@ -212,7 +208,7 @@ all_models = {
 
 with tab2:
     st.header("🕒 Predict Tomorrow's Price")
-    # symbol = st.text_input("Enter Stock Symbol (e.g., HDFCBANK.NS)", value="HDFCBANK.NS")
+    
     symbol = st.text_input("Enter Stock NSE Symbol", value="", placeholder="HDFCBANK")
     symbol=symbol + '.NS'
 
@@ -223,12 +219,11 @@ with tab2:
             st.error("Invalid symbol or no data available.")
         else:
             latest_price = float(df['Close'].iloc[-1])
-            # st.write(f"Latest price for {symbol}: {latest_price}")
+         
             group_name = get_price_group(latest_price)
-            # st.write(f"Price group detected: {group_name}")
+            
             models = all_models.get(group_name)
             
-            # st.write(f"Models available for prediction: {[m['symbol'] for m in models]}")
             predicted_price = predict_tomorrow_price(symbol, models)
 
             group_name = get_price_group(latest_price)
@@ -284,10 +279,10 @@ with tab1:
                     height=500,
                     autosize=True,
                     margin=dict(l=20, r=20, t=40, b=20),
-                    plot_bgcolor="#0d1b2a",      # Optional: match dark theme
+                    plot_bgcolor="#0d1b2a",     
                     paper_bgcolor="#0d1b2a",
                     font=dict(color='white'),
-                    xaxis_title="Trading Days",          # Add X axis label here
+                    xaxis_title="Trading Days",       
                     yaxis_title="Price (INR)"
                 )
 
